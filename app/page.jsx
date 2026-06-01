@@ -1,8 +1,10 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-const questions = [
+const LANGUAGE_KEY = 'friendtype-language';
+
+const questionsZh = [
   ['群聊突然安静了，你会？', [['主动发梗，把气氛拉起来',{S:2,O:1}], ['等别人说话，我先观察',{D:2,G:1}], ['私聊最熟的人吐槽一下',{E:1,D:1}], ['直接潜水，安静也挺好',{D:2,C:1}]]],
   ['朋友突然冷淡，你第一反应是？', [['开始想是不是我做错了',{E:2,G:1}], ['给对方空间，等他想说',{C:2,D:1}], ['直接问清楚',{L:2,O:1}], ['先不管，可能只是忙',{C:2,F:1}]]],
   ['你在朋友群里更像？', [['组织者，负责约人和安排',{L:2,S:1}], ['观察者，看大家互动',{D:2,C:1}], ['气氛组，负责搞笑',{S:2,O:1}], ['消失人口，但关系还在',{D:2,G:1}]]],
@@ -29,7 +31,34 @@ const questions = [
   ['如果朋友突然需要帮忙，你会？', [['马上出现',{E:1,O:2}], ['先判断我能不能真的帮上',{C:2,L:1}], ['能帮就帮，但不喜欢被理所当然',{G:2,C:1}], ['看关系亲不亲',{D:1,G:1}]]],
 ].map(([q, a]) => ({ q, a: a.map(([text, score]) => ({ text, score })) }));
 
-const results = {
+const questionsEn = [
+  ['When the group chat suddenly goes quiet, what do you do?', [['Drop a meme and bring the energy back',{S:2,O:1}], ['Wait and observe before saying anything',{D:2,G:1}], ['Message your closest friend privately about it',{E:1,D:1}], ['Go quiet too; silence is fine',{D:2,C:1}]]],
+  ['A friend suddenly feels distant. What is your first reaction?', [['Wonder if I did something wrong',{E:2,G:1}], ['Give them space until they want to talk',{C:2,D:1}], ['Ask directly what happened',{L:2,O:1}], ['Leave it alone; they may just be busy',{C:2,F:1}]]],
+  ['In a friend group, you are more like the...', [['Organizer who plans meetups',{L:2,S:1}], ['Observer who watches the dynamics',{D:2,C:1}], ['Mood maker who keeps everyone laughing',{S:2,O:1}], ['Person who disappears but still cares',{D:2,G:1}]]],
+  ['People most often describe you as...', [['Easy to be around',{F:2,O:1}], ['A little hard to approach',{D:2,G:1}], ['Really funny',{S:2,E:1}], ['Very dependable',{L:1,C:2}]]],
+  ['When a friend goes through a breakup, you...', [['Stay with them and listen until they are done',{E:2,O:1}], ['Help them analyze the problem',{C:2,L:1}], ['Take them out to distract them',{S:2,F:1}], ['Want to comfort them but do not know what to say',{D:1,G:2}]]],
+  ['When a new friend invites you out, you usually...', [['Say yes; meeting people is nice',{S:2,O:1}], ['Check whether someone familiar will be there',{G:2,D:1}], ['Go if the plan is clear',{C:1,F:1}], ['Probably say no because it feels tiring',{D:2,G:1}]]],
+  ['If a friend cancels plans at the last minute, you...', [['Feel disappointed but keep it to yourself',{E:2,G:1}], ['Do not mind; I can enjoy my own time',{C:2,D:1}], ['Ask what happened',{L:1,O:1}], ['May stop initiating next time',{G:2,E:1}]]],
+  ['What kind of friendship do you prefer?', [['Talking every day and sharing life',{S:2,E:1}], ['Not always in touch, but still close when we meet',{D:1,C:2}], ['Growing together and pushing each other',{L:2,C:1}], ['Free and comfortable without pressure',{F:2,O:1}]]],
+  ['What do you dislike most in friends?', [['Hot-and-cold behavior',{E:2,G:1}], ['Being too controlling',{F:2,D:1}], ['Not keeping their word',{C:2,L:1}], ['Acting overly familiar too fast',{G:2,D:1}]]],
+  ['When a friend vents to you, you usually...', [['Listen carefully and empathize easily',{E:2,O:1}], ['Offer solutions',{C:2,L:1}], ['Use humor to lighten things up',{S:2,F:1}], ['Stay with them, but do not say much',{D:1,C:1}]]],
+  ['What matters most when you make friends?', [['Sincerity',{E:1,O:2}], ['Good boundaries',{D:1,G:2}], ['Fun',{S:2,F:1}], ['Reliability',{C:2,L:1}]]],
+  ['At a group gathering, you usually...', [['Start conversations',{S:2,L:1}], ['Stay near people you already know',{D:1,G:1}], ['Fill in wherever the group needs you',{F:2,C:1}], ['Notice who is closest to whom',{D:1,C:2}]]],
+  ['If a friend forgets your birthday, you...', [['Act fine but remember it for a long time',{E:2,G:1}], ['Honestly do not mind',{C:2,F:1}], ['Remind them with a joke',{S:1,O:1}], ['Think about how they usually treat me',{C:1,G:1}]]],
+  ['Which kind of friend are you most like?', [['The one who answers late-night calls',{E:2,O:1}], ['The one who gets everyone together',{S:1,L:2}], ['The one who quietly helps without taking credit',{C:1,G:1}], ['The one who appears and disappears suddenly',{D:2,F:1}]]],
+  ['After an argument with a friend, you...', [['Want to talk it through immediately',{L:1,O:2}], ['Need some time to cool down',{D:1,C:1}], ['Wait for them to speak first',{G:2,E:1}], ['Decide whether it is worth continuing',{C:2,G:1}]]],
+  ['What kind of friend attracts you most?', [['Warm and outgoing people',{S:1,O:1}], ['Mature and steady people',{C:2,G:1}], ['People with strong opinions',{L:2,C:1}], ['People who understand boundaries',{D:1,G:2}]]],
+  ['When someone unexpectedly compliments you, you...', [['Cannot hide how happy you are',{E:2,O:1}], ['Look calm but feel happy inside',{D:1,G:1}], ['Compliment them back right away',{S:1,F:1}], ['Do not quite know how to respond',{G:2,D:1}]]],
+  ['What is hardest for you to accept in friendship?', [['Talking badly behind someone\'s back',{E:1,G:2}], ['Disrespecting boundaries',{D:1,G:2}], ['Only taking and never giving',{C:2,L:1}], ['A mood that feels too heavy',{S:2,F:1}]]],
+  ['How often do you post updates?', [['Often, to record life',{S:1,O:2}], ['Sometimes, only important things',{C:1,G:1}], ['Rarely, but I watch others',{D:2,G:1}], ['Depends on my mood',{F:2,E:1}]]],
+  ['When friends ask for your opinion, you...', [['Say the truth directly',{L:1,O:1}], ['Care for their feelings first',{E:2,F:1}], ['Analyze the pros and cons',{C:2,L:1}], ['Avoid deciding for other people',{F:2,G:1}]]],
+  ['Your ideal friend group is...', [['Lively, full of jokes, and always chatting',{S:2,O:1}], ['Small, but everyone is genuine',{D:1,E:1}], ['Supportive, with everyone growing together',{L:1,C:2}], ['No forced contact; everyone feels comfortable',{F:2,D:1}]]],
+  ['When you are in a bad mood, you...', [['Talk it out with a friend',{E:2,O:1}], ['Process it alone',{D:2,G:1}], ['Do something to distract yourself',{C:1,F:1}], ['Act fine, but others can tell',{E:1,G:1}]]],
+  ['In friendship, you most want to be...', [['Understood',{E:2,O:1}], ['Respected',{G:2,D:1}], ['Needed',{L:1,E:1}], ['Treated with ease',{F:2,S:1}]]],
+  ['If a friend suddenly needs help, you...', [['Show up right away',{E:1,O:2}], ['First judge whether I can truly help',{C:2,L:1}], ['Help if I can, but dislike being taken for granted',{G:2,C:1}], ['Depends on how close we are',{D:1,G:1}]]],
+].map(([q, a]) => ({ q, a: a.map(([text, score]) => ({ text, score })) }));
+
+const resultsZh = {
   SELG: ['气氛掌控者','你不是单纯外向，你是能把一群人重新点亮的人。',['社交发动机','情绪敏锐','主导感强','慢慢信任']],
   SELO: ['快乐小太阳','你像朋友群里的光，出现的时候气氛自然会变轻。',['热情','好接近','分享欲强','容易心软']],
   SEFG: ['高敏感陪伴者','你很会陪人，但也很容易把别人的情绪背到自己身上。',['共情强','怕打扰','容易想多','温柔']],
@@ -48,27 +77,123 @@ const results = {
   DCFO: ['佛系自由人','你不喜欢被友情绑架，但你也不是冷漠的人。',['自由','舒服','不强求','清醒']],
 };
 
-const axisPairs = [['S','D'], ['E','C'], ['L','F'], ['G','O']];
-const desc = { S:'社交能量', D:'独处能量', E:'情绪感知', C:'冷静分析', L:'主导关系', F:'随和自由', G:'慢热防备', O:'开放表达' };
+const resultsEn = {
+  SELG: ['Vibe Commander','You are not just outgoing. You are the person who can light a whole group back up.',['Social engine','Emotionally sharp','Takes the lead','Trusts slowly']],
+  SELO: ['Happy Little Sun','You feel like light in a friend group; things get easier when you show up.',['Warm','Approachable','Loves sharing','Soft-hearted']],
+  SEFG: ['Highly Sensitive Companion','You are great at being there for people, but you can carry their emotions too heavily.',['Deep empathy','Afraid to bother','Overthinks','Gentle']],
+  SEFO: ['Ultimate Good Friend','You feel comfortable to be around, like a safe zone where nobody has to feel awkward.',['Easygoing','Sincere','Emotionally open','Flexible']],
+  SCLG: ['Reliable Organizer','Whether friends actually meet up often depends on whether you are there.',['Gets things done','Plans well','Grounded','Has boundaries']],
+  SCLO: ['Social Strategist','You are not only lively; you are also good at reading the room.',['Good with words','Analytical','Proactive','Clear-headed']],
+  SCFG: ['Clear-Headed Playmate','You can be lively, but you always keep a quiet sense of proportion.',['Warm outside, steady inside','Respects limits','Reads the moment','Relaxed']],
+  SCFO: ['Chill Joy-Bringer','You do not like complicated relationships. You just want things light, honest, and fun.',['Relaxed','Fun','Not petty','Accepting']],
+  DELG: ['Late-Night Listener','You may not be the loudest, but when someone is really hurting, they may think of you first.',['Empathetic','Slow to warm','Deeply attached','Guarded']],
+  DELO: ['Memory Keeper','You are nostalgic and remember many little things others think you forgot.',['Sentimental','Delicate','Sincere','Slow to warm']],
+  DEFG: ['Solo Observer','It is not that you do not need friends. You just need friends who truly feel comfortable.',['Quiet','Observant','Clear boundaries','Opens slowly']],
+  DEFO: ['Gentle Boundary-Keeper','You are gentle, but not without limits; quiet, but not without feeling.',['Boundaried','Kind','Free','Slow to open']],
+  DCLG: ['Calm Commander','You may not talk much, but you can carry things when it matters.',['Rational','Reliable','Strong-minded','Keeps distance']],
+  DCLO: ['Mature Analyst','You are like the navigation system of a friend group: quiet, but directional.',['Clear','Mature','Good judgment','Sincere']],
+  DCFG: ['Cool Boundary-Setter','You can seem hard to approach, but once close, you are very real.',['Slow to warm','Boundaried','Calm','Does not people-please']],
+  DCFO: ['Chill Free Spirit','You do not like friendship that feels binding, but you are not cold.',['Free','Comfortable','Low-pressure','Clear-headed']],
+};
 
-function calc(answers) {
+const axisPairs = [['S','D'], ['E','C'], ['L','F'], ['G','O']];
+const descZh = { S:'社交能量', D:'独处能量', E:'情绪感知', C:'冷静分析', L:'主导关系', F:'随和自由', G:'慢热防备', O:'开放表达' };
+const descEn = { S:'Social energy', D:'Solo energy', E:'Emotional awareness', C:'Calm analysis', L:'Leads relationships', F:'Flexible freedom', G:'Slow-to-trust guard', O:'Open expression' };
+
+const ui = {
+  zh: {
+    languageLabel: '语言',
+    zh: '中文',
+    en: '英文',
+    heroPill: 'FriendType™ 友情人格测试',
+    headlineTop: '测出你在朋友眼里',
+    headlineAccent: '是什么类型的人',
+    intro: '24 道题，生成你的四字母友情人格。像 MBTI 一样，但是测试你在友情里的相处方式。',
+    start: '开始测试 →',
+    completed: '已有 23,481 人完成测试',
+    question: '题目',
+    previous: '上一题',
+    next: '下一题',
+    viewResult: '查看结果',
+    resultPill: '你的友情类型',
+    strengthTitle: '你的友情优势',
+    strengthText: '你能用自己的方式给朋友稳定感，也很清楚自己在关系里的节奏。',
+    riskTitle: '可能的风险点',
+    riskText: '有时候你会把真实需求藏起来，导致别人误会你不在意。',
+    fitTitle: '适合的朋友类型',
+    fitText: '适合能尊重你边界、同时愿意真诚表达的人。',
+    dimensions: '你的四个维度',
+    leans: '更偏向：',
+    restart: '重新测试',
+    copy: '复制结果',
+    copiedResult: (code, name) => `我的 FriendType 是 ${code} — ${name}`,
+  },
+  en: {
+    languageLabel: 'Language',
+    zh: 'Chinese',
+    en: 'English',
+    heroPill: 'FriendType™ Friendship Personality Test',
+    headlineTop: 'Discover what type of friend',
+    headlineAccent: 'you are in their eyes',
+    intro: 'Answer 24 questions to generate your four-letter friendship type. Like MBTI, but for how you show up in friendships.',
+    start: 'Start test →',
+    completed: '23,481 people have completed the test',
+    question: 'Question',
+    previous: 'Previous',
+    next: 'Next',
+    viewResult: 'View result',
+    resultPill: 'Your friendship type',
+    strengthTitle: 'Your friendship strength',
+    strengthText: 'You give friends stability in your own way, and you understand your rhythm in relationships.',
+    riskTitle: 'Possible blind spot',
+    riskText: 'Sometimes you hide what you really need, which can make others think you do not care.',
+    fitTitle: 'Best-fit friend type',
+    fitText: 'You fit well with people who respect your boundaries and are willing to express themselves sincerely.',
+    dimensions: 'Your four dimensions',
+    leans: 'Leans toward: ',
+    restart: 'Retake test',
+    copy: 'Copy result',
+    copiedResult: (code, name) => `My FriendType is ${code} - ${name}`,
+  },
+};
+
+const translations = {
+  zh: { questions: questionsZh, results: resultsZh, desc: descZh, ui: ui.zh },
+  en: { questions: questionsEn, results: resultsEn, desc: descEn, ui: ui.en },
+};
+
+function calc(answers, copy) {
   const score = { S:0, D:0, E:0, C:0, L:0, F:0, G:0, O:0 };
   answers.forEach((choice, i) => {
     if (choice === null) return;
-    Object.entries(questions[i].a[choice].score).forEach(([k, v]) => { score[k] += v; });
+    Object.entries(copy.questions[i].a[choice].score).forEach(([k, v]) => { score[k] += v; });
   });
   const code = axisPairs.map(([a, b]) => score[a] >= score[b] ? a : b).join('');
-  return { score, code, data: results[code] || results.SEFO };
+  return { score, code, data: copy.results[code] || copy.results.SEFO };
 }
 
 export default function Page() {
+  const [lang, setLang] = useState('zh');
+  const copy = translations[lang];
+  const t = copy.ui;
+  const questions = copy.questions;
   const [screen, setScreen] = useState('home');
   const [index, setIndex] = useState(0);
-  const [answers, setAnswers] = useState(Array(questions.length).fill(null));
-  const result = useMemo(() => calc(answers), [answers]);
+  const [answers, setAnswers] = useState(Array(questionsZh.length).fill(null));
+  const result = useMemo(() => calc(answers, copy), [answers, copy]);
   const selected = answers[index];
   const percent = Math.round(((index + 1) / questions.length) * 100);
   const [name, line, tags] = result.data;
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem(LANGUAGE_KEY);
+    if (saved === 'zh' || saved === 'en') setLang(saved);
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(LANGUAGE_KEY, lang);
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  }, [lang]);
 
   function choose(i) {
     const nextAnswers = [...answers];
@@ -82,7 +207,7 @@ export default function Page() {
   }
 
   function restart() {
-    setAnswers(Array(questions.length).fill(null));
+    setAnswers(Array(questionsZh.length).fill(null));
     setIndex(0);
     setScreen('home');
   }
@@ -91,19 +216,23 @@ export default function Page() {
     <main className="page">
       <div className="glow glow1" />
       <div className="glow glow2" />
+      <div className="language-switcher" aria-label={t.languageLabel}>
+        <button type="button" className={lang === 'zh' ? 'active' : ''} onClick={() => setLang('zh')}>{t.zh}</button>
+        <button type="button" className={lang === 'en' ? 'active' : ''} onClick={() => setLang('en')}>{t.en}</button>
+      </div>
       {screen === 'home' && (
         <section className="hero card">
-          <div className="pill">FriendType™ 友情人格测试</div>
-          <h1>测出你在朋友眼里<br /><span>是什么类型的人</span></h1>
-          <p>24 道题，生成你的四字母友情人格。像 MBTI 一样，但是测试你在友情里的相处方式。</p>
-          <button className="primary" onClick={() => setScreen('quiz')}>开始测试 →</button>
-          <div className="small">已有 23,481 人完成测试</div>
+          <div className="pill">{t.heroPill}</div>
+          <h1>{t.headlineTop}<br /><span>{t.headlineAccent}</span></h1>
+          <p>{t.intro}</p>
+          <button className="primary" onClick={() => setScreen('quiz')}>{t.start}</button>
+          <div className="small">{t.completed}</div>
         </section>
       )}
 
       {screen === 'quiz' && (
         <section className="card quiz">
-          <div className="top"><span>Question {index + 1} / {questions.length}</span><span>{percent}%</span></div>
+          <div className="top"><span>{t.question} {index + 1} / {questions.length}</span><span>{percent}%</span></div>
           <div className="bar"><div style={{ width: `${percent}%` }} /></div>
           <h2>{questions[index].q}</h2>
           <div className="answers">
@@ -114,36 +243,36 @@ export default function Page() {
             ))}
           </div>
           <div className="actions">
-            <button className="ghost" disabled={index === 0} onClick={() => setIndex(Math.max(0, index - 1))}>上一题</button>
-            <button className="primary" disabled={selected === null} onClick={goNext}>{index === questions.length - 1 ? '查看结果' : '下一题'}</button>
+            <button className="ghost" disabled={index === 0} onClick={() => setIndex(Math.max(0, index - 1))}>{t.previous}</button>
+            <button className="primary" disabled={selected === null} onClick={goNext}>{index === questions.length - 1 ? t.viewResult : t.next}</button>
           </div>
         </section>
       )}
 
       {screen === 'result' && (
         <section className="card result">
-          <div className="pill">Your friendship type</div>
+          <div className="pill">{t.resultPill}</div>
           <h3>{result.code}</h3>
           <h1><span>{name}</span></h1>
           <p className="quote">“{line}”</p>
           <div className="tags">{tags.map(t => <span key={t}>#{t}</span>)}</div>
           <div className="grid">
-            <div><b>你的友情优势</b><p>你能用自己的方式给朋友稳定感，也很清楚自己在关系里的节奏。</p></div>
-            <div><b>可能的风险点</b><p>有时候你会把真实需求藏起来，导致别人误会你不在意。</p></div>
-            <div><b>适合的朋友类型</b><p>适合能尊重你边界、同时愿意真诚表达的人。</p></div>
+            <div><b>{t.strengthTitle}</b><p>{t.strengthText}</p></div>
+            <div><b>{t.riskTitle}</b><p>{t.riskText}</p></div>
+            <div><b>{t.fitTitle}</b><p>{t.fitText}</p></div>
           </div>
-          <h4>你的四个维度</h4>
+          <h4>{t.dimensions}</h4>
           <div className="dims">
             {axisPairs.map(([a, b]) => {
               const total = result.score[a] + result.score[b] || 1;
               const left = Math.round((result.score[a] / total) * 100);
               const winner = result.score[a] >= result.score[b] ? a : b;
-              return <div className="dim" key={a+b}><div><b>{a}</b><b>{b}</b></div><div className="bar"><div style={{ width: `${left}%` }} /></div><p>更偏向：{winner} · {desc[winner]}</p></div>;
+              return <div className="dim" key={a+b}><div><b>{a}</b><b>{b}</b></div><div className="bar"><div style={{ width: `${left}%` }} /></div><p>{t.leans}{winner} · {copy.desc[winner]}</p></div>;
             })}
           </div>
           <div className="actions">
-            <button className="ghost" onClick={restart}>重新测试</button>
-            <button className="primary" onClick={() => navigator.clipboard?.writeText(`我的 FriendType 是 ${result.code} — ${name}`)}>复制结果</button>
+            <button className="ghost" onClick={restart}>{t.restart}</button>
+            <button className="primary" onClick={() => navigator.clipboard?.writeText(t.copiedResult(result.code, name))}>{t.copy}</button>
           </div>
         </section>
       )}
