@@ -106,11 +106,22 @@ const ui = {
     zh: '中文',
     en: 'English',
     heroPill: 'FriendType™ 友情人格测试',
+    brandSub: '友情人格引擎',
     headlineTop: '测出你在朋友眼里',
     headlineAccent: '是什么类型的人',
     intro: '24 道题，生成你的四字母友情人格。像 MBTI 一样，但是测试你在友情里的相处方式。',
+    liveBadge: '现在可测',
+    metricQuestions: '24 道题',
+    metricTypes: '16 种类型',
+    metricSave: '结果可复制',
+    previewLabel: '结果预览',
+    previewType: 'SEFO',
+    previewName: '无敌好朋友',
+    previewText: '舒服、真诚、好接近',
+    previewTags: ['真诚', '随和', '情绪开放'],
     start: '开始测试 →',
     completed: '已有 23,481 人完成测试',
+    completedSub: '人完成测试',
     question: '题目',
     previous: '上一题',
     next: '下一题',
@@ -133,11 +144,22 @@ const ui = {
     zh: '中文',
     en: 'English',
     heroPill: 'FriendType™ Friendship Personality Test',
+    brandSub: 'Friendship personality engine',
     headlineTop: 'Discover what type of friend',
     headlineAccent: 'you are in their eyes',
     intro: 'Answer 24 questions to generate your four-letter friendship type. Like MBTI, but for how you show up in friendships.',
+    liveBadge: 'Ready now',
+    metricQuestions: '24 questions',
+    metricTypes: '16 types',
+    metricSave: 'Copyable result',
+    previewLabel: 'Result preview',
+    previewType: 'SEFO',
+    previewName: 'Ultimate Good Friend',
+    previewText: 'Comfortable, sincere, easy to approach',
+    previewTags: ['Sincere', 'Flexible', 'Open'],
     start: 'Start test →',
     completed: '23,481 people have completed the test',
+    completedSub: 'completed tests',
     question: 'Question',
     previous: 'Previous',
     next: 'Next',
@@ -221,12 +243,41 @@ export default function Page() {
         <button type="button" className={lang === 'en' ? 'active' : ''} onClick={() => setLang('en')}>{t.en}</button>
       </div>
       {screen === 'home' && (
-        <section className="hero card">
-          <div className="pill">{t.heroPill}</div>
-          <h1>{t.headlineTop}<br /><span>{t.headlineAccent}</span></h1>
-          <p>{t.intro}</p>
-          <button className="primary" onClick={() => setScreen('quiz')}>{t.start}</button>
-          <div className="small">{t.completed}</div>
+        <section className="hero-stage">
+          <div className="hero-copy">
+            <div className="brand-lockup">
+              <div className="brand-mark">FT</div>
+              <div><b>FriendType</b><span>{t.brandSub}</span></div>
+            </div>
+            <div className="pill">{t.heroPill}</div>
+            <h1>{t.headlineTop}<br /><span>{t.headlineAccent}</span></h1>
+            <p>{t.intro}</p>
+            <div className="hero-actions">
+              <button className="primary" onClick={() => setScreen('quiz')}>{t.start}</button>
+              <div className="hero-count"><b>23,481</b><span>{t.completedSub}</span></div>
+            </div>
+            <div className="hero-metrics">
+              <span>{t.metricQuestions}</span>
+              <span>{t.metricTypes}</span>
+              <span>{t.metricSave}</span>
+            </div>
+          </div>
+          <div className="hero-visual" aria-hidden="true">
+            <div className="status-pill">{t.liveBadge}</div>
+            <div className="type-code">{t.previewType}</div>
+            <div className="type-name">{t.previewName}</div>
+            <p>{t.previewText}</p>
+            <div className="trait-stack">{t.previewTags.map(tag => <span key={tag}>#{tag}</span>)}</div>
+            <div className="signal-grid">
+              {axisPairs.map(([a, b], i) => (
+                <div className="signal" key={a+b}>
+                  <div><b>{a}</b><span>{b}</span></div>
+                  <i style={{ width: `${[72, 64, 58, 78][i]}%` }} />
+                </div>
+              ))}
+            </div>
+            <div className="preview-label">{t.previewLabel}</div>
+          </div>
         </section>
       )}
 
