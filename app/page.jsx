@@ -104,7 +104,7 @@ const ui = {
   zh: {
     languageLabel: '语言',
     zh: '中文',
-    en: '英文',
+    en: 'English',
     heroPill: 'FriendType™ 友情人格测试',
     headlineTop: '测出你在朋友眼里',
     headlineAccent: '是什么类型的人',
@@ -130,7 +130,7 @@ const ui = {
   },
   en: {
     languageLabel: 'Language',
-    zh: 'Chinese',
+    zh: '中文',
     en: 'English',
     heroPill: 'FriendType™ Friendship Personality Test',
     headlineTop: 'Discover what type of friend',
