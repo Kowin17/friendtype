@@ -110,6 +110,7 @@ const ui = {
     headlineTop: '测出你在朋友眼里',
     headlineAccent: '是什么类型的人',
     intro: '24 道题，生成你的四字母友情人格。像 MBTI 一样，但是测试你在友情里的相处方式。',
+    matchLine: '找到最适合你的朋友',
     liveBadge: '现在可测',
     metricQuestions: '24 道题',
     metricTypes: '16 种类型',
@@ -148,6 +149,7 @@ const ui = {
     headlineTop: 'Discover what type of friend',
     headlineAccent: 'you are in their eyes',
     intro: 'Answer 24 questions to generate your four-letter friendship type. Like MBTI, but for how you show up in friendships.',
+    matchLine: 'Find the friends who fit you best',
     liveBadge: 'Ready now',
     metricQuestions: '24 questions',
     metricTypes: '16 types',
@@ -252,6 +254,7 @@ export default function Page() {
             <div className="pill">{t.heroPill}</div>
             <h1>{t.headlineTop}<br /><span>{t.headlineAccent}</span></h1>
             <p>{t.intro}</p>
+            <div className="match-line">{t.matchLine}</div>
             <div className="hero-actions">
               <button className="primary" onClick={() => setScreen('quiz')}>{t.start}</button>
               <div className="hero-count"><b>23,481</b><span>{t.completedSub}</span></div>
