@@ -24,6 +24,8 @@ button{font:inherit}
 :lang(zh-CN) .hero-stage h1{font-size:clamp(50px,5.35vw,64px);line-height:1.08}
 .hero-stage h1 span,.result h1 span{background:linear-gradient(90deg,#f0abfc,#fff,#a5f3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero-stage p{max-width:690px;margin:0 0 28px;color:rgba(255,255,255,.68);font-size:19px;line-height:1.75}
+.match-line{display:inline-flex;align-items:center;margin:-4px 0 24px;padding:9px 13px;border:1px solid rgba(103,232,249,.2);border-radius:999px;background:rgba(103,232,249,.08);color:#c8fbff;font-size:15px;font-weight:900;box-shadow:0 0 26px rgba(103,232,249,.12)}
+.match-line:before{content:"";width:7px;height:7px;margin-right:9px;border-radius:999px;background:linear-gradient(90deg,#f0abfc,#67e8f9);box-shadow:0 0 14px rgba(103,232,249,.7)}
 .primary,.ghost{border:0;border-radius:16px;padding:14px 22px;font-weight:850;cursor:pointer}
 .primary{background:white;color:#050511;box-shadow:0 14px 45px rgba(255,255,255,.12)}
 .primary:disabled{opacity:.35;cursor:not-allowed}
