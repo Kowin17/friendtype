@@ -22,6 +22,7 @@ button{font:inherit}
 .pill{display:inline-flex;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);border-radius:999px;padding:10px 16px;color:rgba(255,255,255,.72);font-size:14px;font-weight:800}
 .hero-stage h1,.result h1{font-size:clamp(48px,7.4vw,86px);line-height:.98;margin:26px 0 20px;font-weight:950;letter-spacing:0}
 :lang(zh-CN) .hero-stage h1{font-size:clamp(50px,5.35vw,64px);line-height:1.08}
+:lang(en) .hero-stage h1{font-size:clamp(46px,5.1vw,66px);line-height:1.05}
 .hero-stage h1 span,.result h1 span{background:linear-gradient(90deg,#f0abfc,#fff,#a5f3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero-stage p{max-width:690px;margin:0 0 28px;color:rgba(255,255,255,.68);font-size:19px;line-height:1.75}
 .match-line{display:inline-flex;align-items:center;margin:-4px 0 24px;padding:9px 13px;border:1px solid rgba(103,232,249,.2);border-radius:999px;background:rgba(103,232,249,.08);color:#c8fbff;font-size:15px;font-weight:900;box-shadow:0 0 26px rgba(103,232,249,.12)}
@@ -75,4 +76,4 @@ button{font:inherit}
 .dim .bar{margin:12px 0}
 .result h4{color:rgba(255,255,255,.58);margin-top:20px}
 @media(max-width:900px){.hero-stage{grid-template-columns:1fr;padding:34px}.hero-visual{min-height:360px}.type-code{margin-top:28px}}
-@media(max-width:760px){.page{padding:84px 18px 24px}.language-switcher{top:16px;right:16px}.card,.hero-stage{padding:24px;border-radius:24px}.hero-stage h1{font-size:clamp(42px,13vw,62px)}:lang(zh-CN) .hero-stage h1{font-size:clamp(40px,11vw,52px)}.hero-actions,.actions{flex-direction:column;align-items:stretch}.primary,.ghost{width:100%}.hero-count{text-align:center}.hero-visual{min-height:330px;padding:22px}.grid,.dims{grid-template-columns:1fr}}
+@media(max-width:760px){.page{padding:84px 18px 24px}.language-switcher{top:16px;right:16px}.card,.hero-stage{padding:24px;border-radius:24px}.hero-stage h1{font-size:clamp(42px,13vw,62px)}:lang(zh-CN) .hero-stage h1{font-size:clamp(40px,11vw,52px)}:lang(en) .hero-stage h1{font-size:clamp(38px,10.5vw,50px)}.hero-actions,.actions{flex-direction:column;align-items:stretch}.primary,.ghost{width:100%}.hero-count{text-align:center}.hero-visual{min-height:330px;padding:22px}.grid,.dims{grid-template-columns:1fr}}
