@@ -103,8 +103,7 @@ const ui = {
     previewText: '舒服、真诚、好接近',
     previewTags: ['真诚', '随和', '情绪开放'],
     start: '开始测试 →',
-    completed: '已有 23,481 人完成测试',
-    completedSub: '人完成测试',
+    completed: '已生成 20,000+ 份人格档案',
     question: '题目',
     previous: '上一题',
     next: '下一题',
@@ -142,8 +141,7 @@ const ui = {
     previewText: 'Comfortable, sincere, easy to approach',
     previewTags: ['Sincere', 'Flexible', 'Open'],
     start: 'Start test →',
-    completed: '23,481 people have completed the test',
-    completedSub: 'completed tests',
+    completed: 'Over 20,000 personality profiles generated',
     question: 'Question',
     previous: 'Previous',
     next: 'Next',
@@ -239,7 +237,7 @@ export default function Page() {
             <div className="match-line">{t.matchLine}</div>
             <div className="hero-actions">
               <button className="primary" onClick={() => setScreen('quiz')}>{t.start}</button>
-              <div className="hero-count"><b>23,481</b><span>{t.completedSub}</span></div>
+              <div className="hero-count"><span>{t.completed}</span></div>
             </div>
             <div className="hero-metrics">
               <span>{t.metricQuestions}</span>
