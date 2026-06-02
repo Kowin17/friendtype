@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 const LANGUAGE_KEY = 'friendtype-language';
 
 const questionsZh = [
-  ['朋友突然变冷淡，回消息也慢了很多。你更可能？', [['先给空间，但会默默观察是不是哪里不对',{D:1,E:1,F:1,G:1}], ['找个不尴尬的时机直接问清楚',{S:1,C:1,L:1,O:1}], ['发点轻松的东西试探气氛，让对方好接',{S:1,E:1,F:1,O:1}], ['先退一步，把最近发生的事复盘一下',{D:1,C:1,L:1,G:1}]]],
+  ['朋友突然变冷淡，回消息也慢了很多。你更可能？', [['默认他可能不想继续靠近，我也开始慢慢抽离',{D:1,E:1,F:1,G:1}], ['找个不尴尬的时机直接问清楚',{S:1,C:1,L:1,O:1}], ['发点轻松的东西试探气氛，让对方好接',{S:1,E:1,F:1,O:1}], ['先退一步，把最近发生的事复盘一下',{D:1,C:1,L:1,G:1}]]],
   ['你刷到一群朋友出去玩，但没人叫你。你会？', [['心里有点酸，但先不表现出来，看看后续',{D:1,E:1,F:1,G:1}], ['找其中一个人轻松问一句“你们怎么去的？”',{S:1,C:1,L:1,O:1}], ['自己安排点别的，再开玩笑说下次带我',{S:1,E:1,L:1,O:1}], ['记下来但不追问，之后调整期待值',{D:1,C:1,F:1,G:1}]]],
   ['朋友答应你的事又临时掉链子。你第一步会？', [['说清楚这件事对你有影响，一起补救',{S:1,E:1,L:1,O:1}], ['先自己改方案，再观察这是不是惯性',{D:1,C:1,F:1,G:1}], ['问清楚卡在哪里，下次把规则说具体点',{S:1,C:1,L:1,G:1}], ['承认失望，但也给对方一点余地',{D:1,E:1,F:1,O:1}]]],
   ['群聊里大家开始对一个决定各说各的。你会？', [['丢个轻松梗缓一下，再看谁真的有意见',{S:1,E:1,F:1,O:1}], ['先不急着讲话，等信息更完整再补一句',{D:1,C:1,F:1,G:1}], ['整理几个选项，让大家投票或定时间',{S:1,C:1,L:1,O:1}], ['私下问那个没说话的人是不是不舒服',{D:1,E:1,L:1,G:1}]]],
@@ -23,7 +23,7 @@ const questionsZh = [
 ].map(([q, a]) => ({ q, a: a.map(([text, score]) => ({ text, score })) }));
 
 const questionsEn = [
-  ['A friend suddenly feels distant and replies way less. What do you do?', [['Give them space, but quietly watch for what may have shifted',{D:1,E:1,F:1,G:1}], ['Find a low-pressure moment and ask what is going on',{S:1,C:1,L:1,O:1}], ['Send something light to make it easy for them to re-enter',{S:1,E:1,F:1,O:1}], ['Step back first and replay what has happened recently',{D:1,C:1,L:1,G:1}]]],
+  ['A friend suddenly feels distant and replies way less. What do you do?', [['Assume they may not want to stay close, so you slowly pull back too',{D:1,E:1,F:1,G:1}], ['Find a low-pressure moment and ask what is going on',{S:1,C:1,L:1,O:1}], ['Send something light to make it easy for them to re-enter',{S:1,E:1,F:1,O:1}], ['Step back first and replay what has happened recently',{D:1,C:1,L:1,G:1}]]],
   ['You see a group of friends hanging out without you. What feels most natural?', [['Feel it, but keep it private and wait to see if it comes up',{D:1,E:1,F:1,G:1}], ['Casually ask one person how the plan happened',{S:1,C:1,L:1,O:1}], ['Make your own plan, then joke that next time they should bring you',{S:1,E:1,L:1,O:1}], ['Take note without chasing, and adjust your expectations',{D:1,C:1,F:1,G:1}]]],
   ['A friend breaks a promise again at the last minute. Your first move is...', [['Tell them it affected you and look for a repair together',{S:1,E:1,L:1,O:1}], ['Rework the plan yourself and watch whether it becomes a pattern',{D:1,C:1,F:1,G:1}], ['Ask what blocked them, then make next time more specific',{S:1,C:1,L:1,G:1}], ['Admit you are disappointed while still leaving them room',{D:1,E:1,F:1,O:1}]]],
   ['The group chat is spiraling because everyone wants a different plan. You...', [['Drop something light to lower the tension, then read the room',{S:1,E:1,F:1,O:1}], ['Let the chat breathe and only add something when the picture is clearer',{D:1,C:1,F:1,G:1}], ['Turn the chaos into options, a poll, or a time everyone can choose',{S:1,C:1,L:1,O:1}], ['Check privately with the quiet person who seems uncomfortable',{D:1,E:1,L:1,G:1}]]],
