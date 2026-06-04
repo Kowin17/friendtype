@@ -1,0 +1,23 @@
+.result .actions{flex-wrap:wrap}
+.result .actions .ghost,.result .actions .primary{flex:1 1 170px}
+.modal-backdrop{position:fixed;z-index:5;inset:0;display:grid;place-items:center;padding:22px;background:rgba(3,3,10,.68);backdrop-filter:blur(18px)}
+.match-modal{position:relative;width:min(720px,100%);max-height:calc(100vh - 44px);overflow:auto;border:1px solid rgba(255,255,255,.14);background:linear-gradient(135deg,rgba(24,24,36,.96),rgba(10,12,24,.94));border-radius:28px;padding:32px;box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 40px rgba(103,232,249,.12)}
+.match-modal:before{content:"";position:absolute;inset:0;border-radius:28px;background:radial-gradient(circle at 18% 0,rgba(217,70,239,.2),transparent 34%),radial-gradient(circle at 100% 100%,rgba(103,232,249,.16),transparent 34%);pointer-events:none}
+.match-modal>*{position:relative;z-index:1}
+.modal-close{position:absolute;z-index:2;top:18px;right:18px;display:grid;place-items:center;width:36px;height:36px;border:1px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.72);font-size:24px;line-height:1;cursor:pointer}
+.match-modal h2{margin:20px 42px 12px 0;font-size:clamp(28px,4vw,42px);line-height:1.08;letter-spacing:0}
+.match-modal>p{margin:0 0 24px;color:rgba(255,255,255,.62);line-height:1.7}
+.match-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.match-form label{display:grid;gap:8px}
+.match-form label span{color:rgba(255,255,255,.64);font-size:13px;font-weight:850}
+.match-form input,.match-form select{width:100%;min-height:48px;border:1px solid rgba(255,255,255,.12);border-radius:15px;background:rgba(0,0,0,.24);color:white;padding:0 14px;font:inherit;font-weight:750;outline:none}
+.match-form input:focus,.match-form select:focus{border-color:#67e8f9;box-shadow:0 0 0 4px rgba(103,232,249,.12)}
+.match-form option{background:#111120;color:white}
+.match-message{grid-column:1/-1;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:16px;background:rgba(255,255,255,.07)}
+.match-message.found{border-color:rgba(103,232,249,.34);background:rgba(103,232,249,.1)}
+.match-message.queued{border-color:rgba(240,171,252,.3);background:rgba(240,171,252,.1)}
+.match-message.error{border-color:rgba(248,113,113,.35);background:rgba(248,113,113,.1)}
+.match-message b{display:block;margin-bottom:6px;color:white}
+.match-message p{margin:0;color:rgba(255,255,255,.68);line-height:1.6}
+.match-form .primary{grid-column:1/-1;width:100%;margin-top:4px}
+@media(max-width:760px){.match-form{grid-template-columns:1fr}.match-modal{padding:24px;border-radius:24px}.match-modal:before{border-radius:24px}}
