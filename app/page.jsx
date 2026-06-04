@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 const LANGUAGE_KEY = 'friendtype-language';
 
-const ageRanges = ['18-22', '23-29', '30-39', '40+'];
+const ageRanges = ['14-15', '16-17', '18-19', '20-22', '22-25', '25-28', '29-35', '35+'];
 const genderOptions = {
   zh: [
     ['female', '女生'],
@@ -32,7 +32,7 @@ const contactTypes = {
 
 const emptyMatchForm = {
   city: '',
-  ageRange: '18-22',
+  ageRange: '14-15',
   gender: 'prefer_not',
   email: '',
   contactType: 'wechat',
