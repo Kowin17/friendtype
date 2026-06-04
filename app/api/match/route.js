@@ -88,6 +88,15 @@ async function sendMatchEmail(to, person, match) {
   return response.ok;
 }
 
+export async function GET() {
+  return NextResponse.json({
+    configured: Boolean(redisUrl && redisToken && resendKey),
+    redisUrl: Boolean(redisUrl),
+    redisToken: Boolean(redisToken),
+    resendKey: Boolean(resendKey),
+  });
+}
+
 export async function POST(request) {
   if (!redisUrl || !redisToken || !resendKey) {
     return NextResponse.json({ error: 'matching_not_configured' }, { status: 503 });
