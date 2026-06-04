@@ -1,4 +1,5 @@
 import './globals.css';
+import './match.css';
 
 export const metadata = {
   title: 'FriendType',
