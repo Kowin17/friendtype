@@ -4,6 +4,41 @@ import { useEffect, useMemo, useState } from 'react';
 
 const LANGUAGE_KEY = 'friendtype-language';
 
+const ageRanges = ['18-22', '23-29', '30-39', '40+'];
+const genderOptions = {
+  zh: [
+    ['female', '女生'],
+    ['male', '男生'],
+    ['nonbinary', '非二元'],
+    ['prefer_not', '不想说明'],
+  ],
+  en: [
+    ['female', 'Female'],
+    ['male', 'Male'],
+    ['nonbinary', 'Non-binary'],
+    ['prefer_not', 'Prefer not to say'],
+  ],
+};
+const contactTypes = {
+  zh: [
+    ['email', 'Email'],
+    ['wechat', '微信号'],
+  ],
+  en: [
+    ['email', 'Email'],
+    ['wechat', 'WeChat'],
+  ],
+};
+
+const emptyMatchForm = {
+  city: '',
+  ageRange: '18-22',
+  gender: 'prefer_not',
+  email: '',
+  contactType: 'wechat',
+  contactValue: '',
+};
+
 const questionsZh = [
   ['你心里最重要的那个朋友突然变冷淡，回消息也慢了很多。你更可能？', [['默认他可能不想继续靠近，我也开始慢慢抽离',{D:1,E:1,F:1,G:1}], ['找个不尴尬的时机直接问清楚',{S:1,C:1,L:1,O:1}], ['发点轻松的东西试探气氛，让对方好接',{S:1,E:1,F:1,O:1}], ['先退一步，把最近发生的事复盘一下',{D:1,C:1,L:1,G:1}]]],
   ['你刷到最好的朋友和另外两个人出去玩，但没人叫你。你会？', [['心里有点酸，但先不表现出来，看看后续',{D:1,E:1,F:1,G:1}], ['直接去问最好的朋友：“为什么没叫我？”',{S:1,C:1,L:1,O:1}], ['自己安排点别的，再开玩笑说下次带我',{S:1,E:1,L:1,O:1}], ['默认这次他们有自己的安排，我会少把自己放进去',{D:1,C:1,F:1,G:1}]]],
@@ -120,6 +155,28 @@ const ui = {
     restart: '重新测试',
     copy: '复制结果',
     copiedResult: (code, name) => `我的 FriendType 是 ${code} — ${name}`,
+    matchCta: '匹配一个人',
+    matchTitle: '匹配一个 100% FriendType 的人',
+    matchIntro: '同城市、同年龄段、同结果才会匹配。每个人只会匹配一次。',
+    city: '城市',
+    cityPlaceholder: '例如 Los Angeles',
+    ageRange: '年龄段',
+    gender: '性别',
+    yourEmail: '你的 Email',
+    yourEmailPlaceholder: 'you@example.com',
+    contactType: '想给对方的联系方式',
+    contactValue: '联系方式内容',
+    contactValuePlaceholder: 'Email 或微信号',
+    submitMatch: '加入匹配',
+    matching: '匹配中...',
+    close: '关闭',
+    matchFoundTitle: '找到 100% match 了',
+    matchFoundText: '我们会发邮件给你们双方，告诉你这个人是你的 match，并附上对方留下的联系方式。',
+    matchQueuedTitle: '已加入匹配池',
+    matchQueuedText: '现在还没有同城市、同年龄段、同结果的人。之后有人 100% match 时，我们会发邮件给你。',
+    matchErrorTitle: '暂时提交不了',
+    matchErrorText: '匹配系统还没连接好，请晚点再试。',
+    matchRequired: '请把城市、Email 和联系方式填完整。',
   },
   en: {
     languageLabel: 'Language',
@@ -158,6 +215,28 @@ const ui = {
     restart: 'Retake test',
     copy: 'Copy result',
     copiedResult: (code, name) => `My FriendType is ${code} - ${name}`,
+    matchCta: 'Match with one person',
+    matchTitle: 'Match with one 100% FriendType person',
+    matchIntro: 'Same city, same age range, same result. Each person can only match once.',
+    city: 'City',
+    cityPlaceholder: 'e.g. Los Angeles',
+    ageRange: 'Age range',
+    gender: 'Gender',
+    yourEmail: 'Your email',
+    yourEmailPlaceholder: 'you@example.com',
+    contactType: 'Contact to share',
+    contactValue: 'Contact detail',
+    contactValuePlaceholder: 'Email or WeChat ID',
+    submitMatch: 'Join matching',
+    matching: 'Matching...',
+    close: 'Close',
+    matchFoundTitle: '100% match found',
+    matchFoundText: 'We will email both of you with the match and the contact detail each person left.',
+    matchQueuedTitle: 'You are in the matching pool',
+    matchQueuedText: 'No same-city, same-age-range, same-result match yet. We will email you when one appears.',
+    matchErrorTitle: 'Could not submit yet',
+    matchErrorText: 'The matching system is not connected yet. Please try again later.',
+    matchRequired: 'Please fill in your city, email, and contact detail.',
   },
 };
 
@@ -184,6 +263,10 @@ export default function Page() {
   const [screen, setScreen] = useState('home');
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState(Array(questionsZh.length).fill(null));
+  const [matchOpen, setMatchOpen] = useState(false);
+  const [matchForm, setMatchForm] = useState(emptyMatchForm);
+  const [matchStatus, setMatchStatus] = useState('idle');
+  const [matchMessage, setMatchMessage] = useState(null);
   const result = useMemo(() => calc(answers, copy), [answers, copy]);
   const selected = answers[index];
   const percent = Math.round(((index + 1) / questions.length) * 100);
@@ -214,6 +297,47 @@ export default function Page() {
     setAnswers(Array(questionsZh.length).fill(null));
     setIndex(0);
     setScreen('home');
+    setMatchOpen(false);
+    setMatchStatus('idle');
+    setMatchMessage(null);
+    setMatchForm(emptyMatchForm);
+  }
+
+  function updateMatchForm(field, value) {
+    setMatchForm(prev => ({ ...prev, [field]: value }));
+  }
+
+  async function submitMatch(event) {
+    event.preventDefault();
+    setMatchMessage(null);
+    if (!matchForm.city.trim() || !matchForm.email.trim() || !matchForm.contactValue.trim()) {
+      setMatchMessage({ type: 'error', title: t.matchErrorTitle, text: t.matchRequired });
+      return;
+    }
+    setMatchStatus('loading');
+    try {
+      const response = await fetch('/api/match', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...matchForm,
+          resultCode: result.code,
+          resultName: name,
+          lang,
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'match_failed');
+      setMatchMessage({
+        type: data.matched ? 'found' : 'queued',
+        title: data.matched ? t.matchFoundTitle : t.matchQueuedTitle,
+        text: data.matched ? t.matchFoundText : t.matchQueuedText,
+      });
+    } catch {
+      setMatchMessage({ type: 'error', title: t.matchErrorTitle, text: t.matchErrorText });
+    } finally {
+      setMatchStatus('idle');
+    }
   }
 
   return (
@@ -306,9 +430,61 @@ export default function Page() {
           </div>
           <div className="actions">
             <button className="ghost" onClick={restart}>{t.restart}</button>
+            <button className="ghost" onClick={() => setMatchOpen(true)}>{t.matchCta}</button>
             <button className="primary" onClick={() => navigator.clipboard?.writeText(t.copiedResult(result.code, name))}>{t.copy}</button>
           </div>
         </section>
+      )}
+      {matchOpen && (
+        <div className="modal-backdrop" role="presentation">
+          <section className="match-modal" role="dialog" aria-modal="true" aria-labelledby="match-title">
+            <button className="modal-close" type="button" onClick={() => setMatchOpen(false)} aria-label={t.close}>×</button>
+            <div className="pill">{result.code} · {name}</div>
+            <h2 id="match-title">{t.matchTitle}</h2>
+            <p>{t.matchIntro}</p>
+            <form className="match-form" onSubmit={submitMatch}>
+              <label>
+                <span>{t.city}</span>
+                <input value={matchForm.city} onChange={e => updateMatchForm('city', e.target.value)} placeholder={t.cityPlaceholder} />
+              </label>
+              <label>
+                <span>{t.ageRange}</span>
+                <select value={matchForm.ageRange} onChange={e => updateMatchForm('ageRange', e.target.value)}>
+                  {ageRanges.map(range => <option key={range} value={range}>{range}</option>)}
+                </select>
+              </label>
+              <label>
+                <span>{t.gender}</span>
+                <select value={matchForm.gender} onChange={e => updateMatchForm('gender', e.target.value)}>
+                  {genderOptions[lang].map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                </select>
+              </label>
+              <label>
+                <span>{t.yourEmail}</span>
+                <input type="email" value={matchForm.email} onChange={e => updateMatchForm('email', e.target.value)} placeholder={t.yourEmailPlaceholder} />
+              </label>
+              <label>
+                <span>{t.contactType}</span>
+                <select value={matchForm.contactType} onChange={e => updateMatchForm('contactType', e.target.value)}>
+                  {contactTypes[lang].map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                </select>
+              </label>
+              <label>
+                <span>{t.contactValue}</span>
+                <input value={matchForm.contactValue} onChange={e => updateMatchForm('contactValue', e.target.value)} placeholder={t.contactValuePlaceholder} />
+              </label>
+              {matchMessage && (
+                <div className={`match-message ${matchMessage.type}`}>
+                  <b>{matchMessage.title}</b>
+                  <p>{matchMessage.text}</p>
+                </div>
+              )}
+              <button className="primary" type="submit" disabled={matchStatus === 'loading'}>
+                {matchStatus === 'loading' ? t.matching : t.submitMatch}
+              </button>
+            </form>
+          </section>
+        </div>
       )}
     </main>
   );
